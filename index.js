@@ -98,6 +98,7 @@ form.addEventListener("click", (event) => {
         window.scrollBy(0, 500);
 
     } else if (event.target.id === "newQuestions") {
+        window.scroll(50, 40);
         problem = randomselect();
         generateQuestions();
     }
