@@ -77,8 +77,8 @@ function generateQuestions() {
 generateQuestions();
 
 form.addEventListener("click", (event) => {
-    event.preventDefault();
     if (event.target.id === "submit") {
+        event.preventDefault()
         const formData = new FormData(form);
         let result = 0;
         let number = 0;
@@ -98,6 +98,7 @@ form.addEventListener("click", (event) => {
         window.scrollBy(0, 500);
 
     } else if (event.target.id === "newQuestions") {
+        event.preventDefault()
         window.scroll(50, 40);
         problem = randomselect();
         generateQuestions();
