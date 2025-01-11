@@ -20,84 +20,85 @@ const questionBank = [
     {question: "What is the correct HTML for creating a form?", options: ["<form>", "<input>", "<form input>", "<form input='text'>"], answer: "<form>"},
     {question: "Which HTML element is used to specify a header for a document or section?", options: ["<section>", "<header>", "<head>", "<top>"], answer: "<header>"}
   ];
-  
-function randomselect(){
-    const data=new Set();
-    while(data.size!=5){
-        const index=Math.floor(Math.random()*20);
+function randomselect() {
+    const data = new Set();
+    while (data.size !== 5) {
+        const index = Math.floor(Math.random() * questionBank.length);
         data.add(questionBank[index]);
     }
-
-    // convert obj into array
     return [...data];
 }
-const form=document.querySelector('form');
-const problem=randomselect();
 
-original_answer={};
+const form = document.querySelector('form');
+let problem = randomselect();
 
-problem.forEach((obj,index)=>{
-    const div_element=document.createElement('div');
-    div_element.className="question";
-    original_answer[`q${index+1}`]=obj['answer'];
+const original_answer = {};
 
-    const para=document.createElement('p');
-    para.innerHTML=`${index+1}. ${obj['question']}`; 
-    div_element.appendChild(para);
+function generateQuestions() {
+    form.innerHTML = '';
+    problem.forEach((obj, index) => {
+        const div_element = document.createElement('div');
+        div_element.className = "question";
+        original_answer[`q${index + 1}`] = obj['answer'];
 
-    // create 4 option
-    obj['options'].forEach((data)=>{
-        const label=document.createElement('label');
-        const input=document.createElement('input');
-        input.type='radio';
-        input.name=`q${index+1}`
-        input.value=data
-        label.appendChild(input);
-        label.appendChild(document.createTextNode(data));
-        div_element.appendChild(label);
-        div_element.appendChild(document.createElement('br'));
+        const para = document.createElement('p');
+        para.innerHTML = `${index + 1}. ${obj['question']}`;
+        div_element.appendChild(para);
 
-    })
-    form.appendChild(div_element);
-})
+        obj['options'].forEach((data) => {
+            const label = document.createElement('label');
+            const input = document.createElement('input');
+            input.type = 'radio';
+            input.name = `q${index + 1}`;
+            input.value = data;
+            label.appendChild(input);
+            label.appendChild(document.createTextNode(data));
+            div_element.appendChild(label);
+            div_element.appendChild(document.createElement('br'));
+        })
+        form.appendChild(div_element);
+    });
 
-const button=document.createElement('button');
-button.type="submit"
-button.className="submit-btn";
-button.innerHTML="Submit";
-form.appendChild(button);
-// eventlistener and question check
-form.addEventListener("submit", (event) => {
+    const submitButton = document.createElement('button');
+    submitButton.type = "button";
+    submitButton.className = "submit-btn";
+    submitButton.id = "submit";
+    submitButton.innerHTML = "Submit";
+    form.appendChild(submitButton);
+
+    const newGenerateButton = document.createElement('button');
+    newGenerateButton.className = "btn";
+    newGenerateButton.innerHTML = "New Questions";
+    newGenerateButton.type = 'button';
+    newGenerateButton.id = "newQuestions";
+    form.appendChild(newGenerateButton);
+}
+
+generateQuestions();
+
+form.addEventListener("click", (event) => {
     event.preventDefault();
-    const formData = new FormData(form);
-    let result = 0;
-    let number=0;
-    for (let [key, value] of formData.entries()) {
-        if (value === original_answer[key]){
-            result++;
-            number+=4;
+    if (event.target.id === "submit") {
+        const formData = new FormData(form);
+        let result = 0;
+        let number = 0;
+
+        for (let [key, value] of formData.entries()) {
+            if (value === original_answer[key]) {
+                result++;
+                number += 4;
+            } else {
+                number -= 1;
+            }
         }
-        else if(value !== original_answer[key]){
-            number-=1;
-        }
+
+        const out = document.getElementById('out');
+        out.innerText = `${result} out of 5 is correct and you got ${number} Marks out of 20`;
+        form.reset();
+        window.scrollBy(0, 500);
+
+    } else if (event.target.id === "newQuestions") {
+        problem = randomselect();
+        generateQuestions();
     }
-    window.scrollBy(0, 500); 
-    const out = document.getElementById('out');
-    out.innerText = `${result} out of 5 is correct and you got ${number} Marks out of 20`;
-    form.reset();
 });
-
-// const reset=document.createElement('button');
-// reset.type='reset';
-// reset.className="submit-btn btn";
-// reset.innerHTML="Reset";
-// form.appendChild(reset);
-
-// form.addEventListener('reset',()=>{
-//     form.reset();
-//     const out = document.getElementById('out');
-//     out.innerHTML=``;
-//     window.scrollBy(0, 500); 
-
-// })
-  

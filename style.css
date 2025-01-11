@@ -24,7 +24,7 @@ h1 {
 .question input {
     margin-right: 10px;
 }
-.submit-btn {
+.submit-btn ,.btn{
     display: block;
     width: 100%;
     padding: 10px;
@@ -35,7 +35,7 @@ h1 {
     border-radius: 5px;
     cursor: pointer;
 }
-.submit-btn:hover {
+.submit-btn:hover, .btn:hover {
     background: #0056b3;
 }
 .result {
