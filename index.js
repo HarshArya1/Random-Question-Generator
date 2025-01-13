@@ -21,12 +21,18 @@ const questionBank = [
     {question: "Which HTML element is used to specify a header for a document or section?", options: ["<section>", "<header>", "<head>", "<top>"], answer: "<header>"}
   ];
 function randomselect() {
-    const data = new Set();
-    while (data.size !== 5) {
-        const index = Math.floor(Math.random() * questionBank.length);
-        data.add(questionBank[index]);
+    const arr = [];
+    let i = 0;
+    let length = questionBank.length;
+    while(i<5)
+    {
+      const index = Math.floor(Math.random()*length);
+      arr.push(questionBank[index]);
+      [questionBank[index],questionBank[length-1]] = [questionBank[length-1],questionBank[index]];
+      length--,i++;
     }
-    return [...data];
+
+    return arr;
 }
 
 const form = document.querySelector('form');
