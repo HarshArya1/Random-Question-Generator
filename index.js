@@ -19,26 +19,67 @@ const questionBank = [
     {question: "Which of the following HTML elements is used to create a drop-down list?", options: ["<list>", "<dropdown>", "<select>", "<input type='dropdown'>"], answer: "<select>"},
     {question: "What is the correct HTML for creating a form?", options: ["<form>", "<input>", "<form input>", "<form input='text'>"], answer: "<form>"},
     {question: "Which HTML element is used to specify a header for a document or section?", options: ["<section>", "<header>", "<head>", "<top>"], answer: "<header>"}
-  ];
+];
+
 function randomselect() {
     const arr = [];
     let i = 0;
     let length = questionBank.length;
-    while(i<5)
-    {
-      const index = Math.floor(Math.random()*length);
-      arr.push(questionBank[index]);
-      [questionBank[index],questionBank[length-1]] = [questionBank[length-1],questionBank[index]];
-      length--,i++;
+    while(i < 5) {
+        const index = Math.floor(Math.random() * length);
+        arr.push(questionBank[index]);
+        [questionBank[index], questionBank[length - 1]] = [questionBank[length - 1], questionBank[index]];
+        length--, i++;
     }
-
     return arr;
 }
 
 const form = document.querySelector('form');
 let problem = randomselect();
-
 const original_answer = {};
+
+let timeleft = 30;
+let timeid = null;
+
+function StartTimer(){
+    timeleft = 30;
+    document.getElementById('time').innerText = timeleft;
+    document.getElementById('message').innerText = "";
+    timeid = setInterval(countdown, 1000); // callback function given
+}
+
+function countdown(){
+    if(timeleft === 0){
+        clearTimeout(timeid);
+        document.getElementById('message').innerText = "Time's up!";
+        const formElements = form.elements;
+        const formData = new FormData(form);
+        let result = 0;
+        let number = 0;
+
+        for (let [key, value] of formData.entries()) {
+            if (value === original_answer[key]) {
+                result++;
+                number += 4;
+            } else {
+                number -= 1;
+            }
+        }
+
+        const out = document.getElementById('out');
+        out.innerText = `${result} out of 5 is correct and you got ${number} Marks out of 20`;
+        form.reset();
+        window.scrollBy(0, 500); 
+    }
+    else if(timeleft === 10){
+        document.getElementById('message').innerText = "Hurry up, only 10 seconds left!";
+    }
+    else {
+        document.getElementById('message').innerText = "";
+    }
+    document.getElementById('time').innerText = timeleft;
+    timeleft--;
+}
 
 function generateQuestions() {
     form.innerHTML = '';
@@ -78,12 +119,16 @@ function generateQuestions() {
     newGenerateButton.type = 'button';
     newGenerateButton.id = "newQuestions";
     form.appendChild(newGenerateButton);
+
+    // Start the timer when questions are generated
+    StartTimer();
 }
 
 generateQuestions();
 
 form.addEventListener("click", (event) => {
     if (event.target.id === "submit") {
+        clearTimeout(timeid);
         event.preventDefault()
         const formData = new FormData(form);
         let result = 0;
@@ -108,5 +153,10 @@ form.addEventListener("click", (event) => {
         window.scroll(50, 40);
         problem = randomselect();
         generateQuestions();
+        const out = document.getElementById('out');
+        out.innerText = ``;
+        form.reset();
+        clearTimeout(timeid);
+        StartTimer();
     }
 });

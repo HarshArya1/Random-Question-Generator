@@ -48,3 +48,12 @@ h1 {
 .btn{
     margin-top: 10px;
 }
+#timer {
+    font-size: 20px;
+    color: red;
+}
+
+#message {
+    font-size: 18px;
+    color: blue;
+}
